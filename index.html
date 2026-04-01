@@ -19,13 +19,19 @@
 
         /* Hero Section */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    /* ADD THIS PART BELOW */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(26, 0, 51, 1)), url('im.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* This makes the car stay still while you scroll */
+    }
 
         h1 {
             font-size: clamp(3rem, 10vw, 5rem);
@@ -165,32 +171,18 @@
 <body>
 <section class="hero">
     <p style="color: #a855f7; font-weight: bold; margin-bottom: 10px;">[ SYSTEM INITIALIZED ]</p>
-    
-    <h1>MAURYA</h1>
-    
+    <h1 style="text-shadow: 0 0 20px rgba(168, 85, 247, 1);">MAURYA</h1>
     <p class="quote">"Logic is the beginning of wisdom, not the end."</p>
 
     <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-        
         <button class="glow-btn" onclick="scrollToId('experience')">View Experience</button>
-
         <a href="game.html" style="text-decoration: none;">
-            <button style="
-                padding: 12px 24px; 
-                background: transparent; 
-                color: #0f0; 
-                border: 2px solid #0f0; 
-                border-radius: 5px; 
-                cursor: pointer; 
-                font-weight: bold;
-                box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
-                transition: 0.3s;
-                font-family: 'Segoe UI', sans-serif;
-            ">
+            <button style="padding: 12px 24px; background: transparent; color: #0f0; border: 2px solid #0f0; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);">
                 Play Game by Me 🎮
             </button>
         </a>
     </div>
+</section>
 
     <div class="scroll-indicator">
         <span>SCROLL</span>
