@@ -3,55 +3,27 @@
 <head>
   <title>Maurya's Travel Website</title>
 </head>
-
-<body style="font-family: Arial; text-align: center;">
-
-  <h1>🌍 Welcome to My Travel Website</h1>
-
-  <p>Hi, I'm Maurya 👋<br>
-  I love coding and exploring new places!</p>
-
-  <h2>✈️ Places I Want to Visit</h2>
-
-  <h3>🇫🇷 Paris</h3>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Paris_Night.jpg" width="300">
-
-  <h3>🇮🇳 Goa</h3>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Goa_beach.jpg" width="300">
-
-  <h3>🇯🇵 Tokyo</h3>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Tokyo_Skyline.jpg" width="300">
-
   <p>😎 This is my first website!</p>
-  <audio id="faaahSound">
+<audio id="faaahSound" preload="auto">
   <source src="https://www.myinstants.com/media/sounds/faaah-63455.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
 </audio>
 
-<button onclick="playFaaah()" style="padding: 15px 25px; font-size: 18px; background-color: #800000; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+<button onclick="playFaaah()" style="padding: 15px; cursor: pointer;">
   Press for FAAAH! 🔊
 </button>
 
 <script>
   function playFaaah() {
     var audio = document.getElementById("faaahSound");
-    audio.play();
-  }
-</script>
-  <script>
-  function playFaaah() {
-    var audio = document.getElementById("faaahSound");
-    var btn = event.target; // This gets the button you clicked
     
-    audio.play();
-
-    // Make the button change color briefly
-    btn.style.backgroundColor = "#ff0000"; 
+    // This part helps "reset" the sound so you can click it multiple times fast
+    audio.pause();
+    audio.currentTime = 0;
     
-    // Change it back after 500 milliseconds
-    setTimeout(function() {
-      btn.style.backgroundColor = "#800000";
-    }, 500);
+    audio.play().catch(function(error) {
+      console.log("Audio play failed: " + error);
+      alert("Browser blocked the sound! Try clicking anywhere on the page first, then the button.");
+    });
   }
 </script>
 
