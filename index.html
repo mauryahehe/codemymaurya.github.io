@@ -23,6 +23,37 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Tokyo_Skyline.jpg" width="300">
 
   <p>😎 This is my first website!</p>
+  <audio id="faaahSound">
+  <source src="https://www.myinstants.com/media/sounds/faaah-63455.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<button onclick="playFaaah()" style="padding: 15px 25px; font-size: 18px; background-color: #800000; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+  Press for FAAAH! 🔊
+</button>
+
+<script>
+  function playFaaah() {
+    var audio = document.getElementById("faaahSound");
+    audio.play();
+  }
+</script>
+  <script>
+  function playFaaah() {
+    var audio = document.getElementById("faaahSound");
+    var btn = event.target; // This gets the button you clicked
+    
+    audio.play();
+
+    // Make the button change color briefly
+    btn.style.backgroundColor = "#ff0000"; 
+    
+    // Change it back after 500 milliseconds
+    setTimeout(function() {
+      btn.style.backgroundColor = "#800000";
+    }, 500);
+  }
+</script>
 
 </body>
 </html>
