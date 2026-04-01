@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Maurya's Travel Website</title>
+    <title>Maurya's Travel Website</title>
 </head>
-  <p>😎 This is my first website!</p>
-<audio id="faaahSound" preload="auto">
-  <source src="https://www.myinstants.com/media/sounds/faaah-63455.mp3" type="audio/mpeg">
-</audio>
+<body style="font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; padding: 50px;">
 
-<button onclick="playFaaah()" style="padding: 15px; cursor: pointer;">
-  Press for FAAAH! 🔊
-</button>
+    <h1>🌍 Welcome to My Travel Website</h1>
+    <p>Hi, I'm Maurya! I love coding and exploring new places.</p>
 
-<script>
-  function playFaaah() {
-    var audio = document.getElementById("faaahSound");
-    
-    // This part helps "reset" the sound so you can click it multiple times fast
-    audio.pause();
-    audio.currentTime = 0;
-    
-    audio.play().catch(function(error) {
-      console.log("Audio play failed: " + error);
-      alert("Browser blocked the sound! Try clicking anywhere on the page first, then the button.");
-    });
-  }
-</script>
+    <audio id="faaahSound">
+        <source src="https://files.catbox.moe/5n7t8n.mp3" type="audio/mpeg">
+    </audio>
+
+    <button onclick="playFaaah()" style="padding: 20px 40px; font-size: 20px; background-color: #800000; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0px 4px #600000;">
+        Press for FAAAH! 🔊
+    </button>
+
+    <script>
+        function playFaaah() {
+            var audio = document.getElementById("faaahSound");
+            
+            // This resets the sound so you can spam the button
+            audio.pause();
+            audio.currentTime = 0;
+            
+            // This plays the sound and catches errors
+            audio.play().catch(function(error) {
+                alert("Please click anywhere on the page first, then the button!");
+            });
+        }
+    </script>
 
 </body>
 </html>
