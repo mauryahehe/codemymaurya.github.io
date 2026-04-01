@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAURYA | COSMIC VOYAGE</title>
+    <style>
+        body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; user-select: none; }
+        canvas { display: block; }
+        
+        #hud { position: absolute; top: 20px; left: 20px; color: #a855f7; font-size: 1.2rem; pointer-events: none; text-shadow: 0 0 10px #a855f7; z-index: 10; }
+        #altitude { color: #fff; font-weight: bold; }
+        #difficulty { font-size: 0.8rem; color: #ffae00; margin-top: 5px; }
+
+        #gameOverScreen { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            text-align: center; display: none; background: rgba(0,0,0,0.95); 
+            padding: 40px; border: 2px solid #ff4444; border-radius: 15px; 
+            box-shadow: 0 0 50px #ff0000; z-index: 100;
+        }
+        
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .game-btn { 
+            padding: 12px 24px; background: transparent; color: #fff; 
+            border: 1px solid #fff; cursor: pointer; transition: 0.3s; 
+            text-transform: uppercase; font-weight: bold; text-decoration: none;
+        }
+        .restart-btn { border-color: #0f0; color: #0f0; }
+        .restart-btn:hover { background: #0f0; color: #000; box-shadow: 0 0 20px #0f0; }
+    </style>
+</head>
+<body>
+
+    <div id="hud">
+        ALTITUDE: <span id="altitude">0</span> KM<br>
+        SYSTEM: <span id="nextPlanet" style="color: #0f0;">ACTIVE</span>
+        <div id="difficulty">LEVEL: 1 (STABLE)</div>
+    </div>
+
+    <div id="gameOverScreen">
+        <h1 style="color: #ff4444;">[ MISSION TERMINATED ]</h1>
+        <p>Collision detected at <span id="finalAltitude"></span> KM.</p>
+        <div class="btn-group">
+            <button class="game-btn restart-btn" onclick="location.reload()">Re-Launch</button>
+            <a href="index.html" class="game-btn" style="border-color: #a855f7; color: #a855f7;">Exit</a>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const altitudeEl = document.getElementById('altitude');
+        const difficultyEl = document.getElementById('difficulty');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalAltitudeEl = document.getElementById('finalAltitude');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let altitude = 0;
+        let speed = 3;
+        let gameOver = false;
+        let particles = [];
+        let meteors = [];
+        let stars = [];
+        let activePlanets = [];
+
+        // Realistic Planet Data
+        let planetsData = [
+            { name: "MOON", alt: 800, color1: "#999", color2: "#444", size: 60, spawned: false },
+            { name: "MARS", alt: 2500, color1: "#ff4500", color2: "#8b0000", size: 80, spawned: false },
+            { name: "JUPITER", alt: 5500, color1: "#e3bb76", color2: "#a57e55", size: 180, spawned: false },
+            { name: "SATURN", alt: 9000, color1: "#f4e4bc", color2: "#c5ab6e", size: 140, spawned: false, rings: true },
+            { name: "NEPTUNE", alt: 13000, color1: "#4b5fed", color2: "#1e2f97", size: 110, spawned: false },
+            { name: "PLUTO", alt: 18000, color1: "#fff", color2: "#7b8ea3", size: 40, spawned: false }
+        ];
+
+        // Background setup
+        for (let i = 0; i < 200; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 0.5,
+                t: Math.random() * Math.PI * 2 // twinkle phase
+            });
+        }
+
+        const player = { x: canvas.width / 2, y: canvas.height - 150, w: 40, h: 60 };
+
+        function createExplosion(x, y) {
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 0.5) * 20,
+                    life: 1.0,
+                    color: Math.random() > 0.5 ? "#ff5500" : "#ffff00"
+                });
+            }
+        }
+
+        function drawBackground() {
+            // 1. Deep Space Void with Milky Way Dust
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Milky Way gradient cloud (faint dark purple/blue)
+            ctx.save();
+            ctx.globalAlpha = 0.15; // very faint
+            let grad = ctx.createRadialGradient(canvas.width/2, canvas.height, 0, canvas.width/2, canvas.height, canvas.height*1.5);
+            grad.addColorStop(0, "#2d004d"); // deep purple dust
+            grad.addColorStop(0.5, "#000033"); // deep blue dust
+            grad.addColorStop(1, "#000000"); // edge of space
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+
+            // 2. Multilayered Twinkling Stars
+            stars.forEach(star => {
+                let opacity = Math.sin(star.t) * 0.3 + 0.7; // Twinkle (0.4 to 1.0)
+                ctx.fillStyle = `rgba(255, 255, 230, ${opacity})`; // soft warm yellow/white
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Parallax move stars
+                star.y += speed * 0.1 * star.r/2;
+                if(star.y > canvas.height) star.y = -10;
+                star.t += 0.05; // speed up twinkle
+            });
+        }
+
+        function drawPlanet(p) {
+            ctx.save();
+            ctx.shadowBlur = 35; ctx.shadowColor = p.color1;
+            
+            // Body Gradient (3D Effect)
+            let grad = ctx.createRadialGradient(p.x - p.size/3, p.y - p.size/3, p.size/10, p.x, p.y, p.size);
+            grad.addColorStop(0, p.color1); grad.addColorStop(1, p.color2);
+            
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0; // Reset shadow for text
+
+            // Saturn's Rings
+            if(p.rings) {
+                ctx.strokeStyle = "rgba(197, 171, 110, 0.6)";
+                ctx.lineWidth = 15; ctx.beginPath();
+                ctx.ellipse(p.x, p.y, p.size * 1.8, p.size * 0.4, Math.PI/6, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Planet Label
+            ctx.fillStyle = "#fff"; ctx.font = "bold 20px 'Segoe UI'";
+            ctx.textAlign = "center"; ctx.textShadow = "0 0 10px #000";
+            ctx.fillText(p.name, p.x, p.y + p.size + 30);
+            
+            ctx.restore();
+        }
+
+        // --- NEW REALISTIC SPACESHIP DESIGN ---
+        function drawSpaceship() {
+            if(gameOver) return;
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            
+            // Rocket Hull (Metallic Gradient)
+            let hullGrad = ctx.createLinearGradient(0, -30, 0, 30);
+            hullGrad.addColorStop(0, "#fff"); // Bright Nose Cone
+            hullGrad.addColorStop(1, "#c5ab6e"); // Faded metallic base
+
+            ctx.fillStyle = hullGrad;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#a855f7"; // Hull glow
+
+            // Body Path
+            ctx.beginPath();
+            ctx.moveTo(0, -30); // Nose Cone Tip
+            ctx.quadraticCurveTo(15, -15, 12, 10); // Right hull curve
+            ctx.lineTo(15, 20); // Right Stabilizer base
+            ctx.lineTo(-15, 20); // Left Stabilizer base
+            ctx.lineTo(-12, 10); // Left hull curve
+            ctx.quadraticCurveTo(-15, -15, 0, -30); // Back to Nose Cone Tip
+            ctx.closePath();
+            ctx.fill();
+
+            // Engine Stabilizers
+            ctx.fillStyle = "#888"; // Faded gray for engine base
+            ctx.beginPath(); ctx.moveTo(-15, 20); ctx.lineTo(-18, 25); ctx.lineTo(-12, 25); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(15, 20); ctx.lineTo(18, 25); ctx.lineTo(12, 25); ctx.closePath(); ctx.fill();
+
+            // Cockpit Window (Neon Glint)
+            ctx.fillStyle = "#0f0";
+            ctx.shadowBlur = 5; ctx.shadowColor = "#0f0";
+            ctx.fillRect(-4, -10, 8, 15);
+            ctx.shadowBlur = 0;
+
+            // --- INTENSE PLASMA FLAME ---
+            let flameOpacity = Math.random() * 0.2 + 0.8;
+            ctx.fillStyle = `rgba(168, 85, 247, ${flameOpacity})`; // core (purple)
+            ctx.beginPath();
+            ctx.moveTo(-7, 25); // Engine base
+            ctx.quadraticCurveTo(0, 25 + (Math.random() * 30 + 15), 7, 25);
+            ctx.lineTo(0, 25);
+            ctx.fill();
+
+            ctx.fillStyle = `rgba(236, 72, 153, ${flameOpacity * 0.6})`; // edge (pink)
+            ctx.beginPath();
+            ctx.moveTo(-4, 25);
+            ctx.quadraticCurveTo(0, 25 + (Math.random() * 20 + 10), 4, 25);
+            ctx.lineTo(0, 25);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function update() {
+            if (!gameOver) {
+                drawBackground(); // Draw stars/dust first
+
+                altitude += speed / 3; // slower altitude gain
+                altitudeEl.innerText = Math.floor(altitude);
+
+                // Planet Spawning
+                planetsData.forEach(p => {
+                    if (altitude > p.alt && !p.spawned) {
+                        activePlanets.push({ ...p, y: -300, x: Math.random() * (canvas.width - 200) + 100 });
+                        p.spawned = true;
+                    }
+                });
+
+                activePlanets.forEach((p, i) => {
+                    p.y += speed * 0.7; // Planets move slower for parallax effect
+                    drawPlanet(p);
+                    if (Math.hypot(p.x - player.x, p.y - player.y) < p.size + 20) triggerGameOver();
+                });
+
+                // Meteors
+                if (Math.random() < (0.04 + (altitude/15000))) meteors.push({ x: Math.random() * canvas.width, y: -50, r: Math.random() * 12 + 6, s: Math.random() * 6 + 5 });
+                meteors.forEach((m, i) => {
+                    m.y += m.s;
+                    ctx.fillStyle = "#666"; // flat gray rock
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2); ctx.fill();
+                    if (Math.hypot(m.x - player.x, m.y - player.y) < m.r + 20) triggerGameOver();
+                    if (m.y > canvas.height) meteors.splice(i, 1);
+                });
+
+                // --- DIFFICULTY SCALING ---
+                speed += 0.0005; // ramping up speed over time
+                if(altitude > 10000) { difficultyEl.innerText = "LEVEL: HYPERSPACE (EXTREME)"; difficultyEl.style.color = "red"; }
+                else if(altitude > 5000) { difficultyEl.innerText = "LEVEL: ORBITAL (DANGEROUS)"; difficultyEl.style.color = "orange"; }
+
+                drawSpaceship(); // Final ship render
+            }
+
+            // Explosion Particles
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy; p.life -= 0.02;
+                ctx.fillStyle = `rgba(255, 100, 0, ${p.life})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill();
+                if (p.life <= 0) particles.splice(i, 1);
+            });
+
+            requestAnimationFrame(update);
+        }
+
+        function triggerGameOver() {
+            if (gameOver) return;
+            gameOver = true;
+            createExplosion(player.x, player.y);
+            setTimeout(() => {
+                finalAltitudeEl.innerText = Math.floor(altitude);
+                gameOverScreen.style.display = "block";
+            }, 800);
+        }
+
+        window.addEventListener('mousemove', e => player.x = e.clientX);
+        window.addEventListener('touchmove', e => player.x = e.touches[0].clientX);
+
+        update();
+    </script>
+</body>
+</html>
