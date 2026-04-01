@@ -84,6 +84,25 @@
         }
 
         /* Sections Styling */
+        /* This targets the main container holding your experience and projects */
+.main-content-area {
+    background-image: linear-gradient(rgba(26, 0, 51, 0.85), rgba(0, 0, 0, 0.9)), url('im.jpg');
+    background-attachment: fixed; /* This keeps the car still while you scroll */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 60px 20px;
+    border-radius: 30px;
+    margin: 20px;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Ensures your cards stay readable over the image */
+.card, .experience-box, .project-box {
+    background: rgba(45, 0, 77, 0.7) !important; 
+    backdrop-filter: blur(10px); /* Modern glass-morphism effect */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
         .container {
             width: 90%;
             max-width: 1000px;
@@ -178,7 +197,7 @@
         <div class="mouse"><div class="wheel"></div></div>
     </div>
 </section>
-    <div class="container">
+   <div class="container">
         <section id="experience" class="section card">
             <h2 style="color: #a855f7;">Technical Experience</h2>
             <p>Expertise built through consistent learning and application in backend and database management.</p>
@@ -188,6 +207,20 @@
                 <div class="skill-tag">DBMS & SQL Architecture</div>
                 <div class="skill-tag">Lua (Roblox Studio)</div>
             </div>
+        </section>
+
+        <section id="projects" class="section card">
+            <h2 style="color: #a855f7;">Featured Projects</h2>
+            <div class="project-item">
+                <h3>📦 Cloth Management System</h3>
+                <p>A comprehensive inventory tool built with Python and MySQL.</p>
+            </div>
+            <div class="project-item">
+                <h3>🚜 Village Driver (Roblox)</h3>
+                <p>A safe-driving simulation focused on physics and game logic.</p>
+            </div>
+        </section>
+    </div>
         </section>
 
         <section id="projects" class="section card">
