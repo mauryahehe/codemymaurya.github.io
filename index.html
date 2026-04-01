@@ -144,22 +144,40 @@
     </style>
 </head>
 <body>
+<section class="hero">
+    <p style="color: #a855f7; font-weight: bold; margin-bottom: 10px;">[ SYSTEM INITIALIZED ]</p>
+    
+    <h1>MAURYA</h1>
+    
+    <p class="quote">"Logic is the beginning of wisdom, not the end."</p>
 
-    <section class="hero">
-        <p style="color: #a855f7; font-weight: bold;">[ SYSTEM INITIALIZED ]</p>
-        <h1>MAURYA</h1>
-        <p class="quote">"Logic is the beginning of wisdom, not the end."</p>
+    <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
         
-        <div style="margin-top: 30px;">
-            <button class="glow-btn" onclick="scrollToId('experience')">View Experience</button>
-        </div>
+        <button class="glow-btn" onclick="scrollToId('experience')">View Experience</button>
 
-        <div class="scroll-indicator">
-            <span>SCROLL</span>
-            <div class="mouse"><div class="wheel"></div></div>
-        </div>
-    </section>
+        <a href="game.html" style="text-decoration: none;">
+            <button style="
+                padding: 12px 24px; 
+                background: transparent; 
+                color: #0f0; 
+                border: 2px solid #0f0; 
+                border-radius: 5px; 
+                cursor: pointer; 
+                font-weight: bold;
+                box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+                transition: 0.3s;
+                font-family: 'Segoe UI', sans-serif;
+            ">
+                Play Game by Me 🎮
+            </button>
+        </a>
+    </div>
 
+    <div class="scroll-indicator">
+        <span>SCROLL</span>
+        <div class="mouse"><div class="wheel"></div></div>
+    </div>
+</section>
     <div class="container">
         <section id="experience" class="section card">
             <h2 style="color: #a855f7;">Technical Experience</h2>
