@@ -189,16 +189,27 @@
             </div>
         </section>
 
-        <section id="projects" class="section card">
-            <h2 style="color: #a855f7;">Featured Projects</h2>
-            <div style="margin-top: 20px;">
-                <h3>📦 Cloth Management System</h3>
-                <p>A comprehensive inventory tool built with Python and MySQL to automate billing and stock tracking.</p>
-                <hr style="border: 0.5px solid rgba(168, 85, 247, 0.2); margin: 20px 0;">
-                <h3>🚜 Village Driver (Roblox)</h3>
-                <p>A safe-driving simulation game set in a rural environment, focused on physics and game logic.</p>
-            </div>
-        </section>
+       <section id="projects" class="section card">
+    <h2 style="color: #a855f7;">Featured Projects</h2>
+    <div style="margin-top: 20px;">
+        
+        <!-- NEW CLICKABLE CARD: CropCart -->
+        <a href="YOUR_CROPCART_LINK_HERE" target="_blank" rel="noopener noreferrer" class="project-link">
+            <h3 style="margin-top: 0;">🛒 CropCart</h3>
+            <p style="margin-bottom: 0;">An interactive platform for [insert brief description here]. Click to view the live site!</p>
+        </a>
+        
+        <hr style="border: 0.5px solid rgba(168, 85, 247, 0.2); margin: 20px 0;">
+        
+        <h3>📦 Cloth Management System</h3>
+        <p>A comprehensive inventory tool built with Python and MySQL to automate billing and stock tracking.</p>
+        
+        <hr style="border: 0.5px solid rgba(168, 85, 247, 0.2); margin: 20px 0;">
+        
+        <h3>🚜 Village Driver (Roblox)</h3>
+        <p>A safe-driving simulation game set in a rural environment, focused on physics and game logic.</p>
+    </div>
+</section>
 
         <section id="hackathons" class="section card">
             <h2 style="color: #a855f7;">Hackathons & Awards</h2>
@@ -226,6 +237,24 @@
 
         window.addEventListener("scroll", reveal);
         reveal();
+        /* Clickable Project Card Styles */
+.project-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(168, 85, 247, 0.05); /* Very subtle purple tint */
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.project-link:hover {
+    transform: translateY(-5px);
+    background: rgba(168, 85, 247, 0.15); /* Brightens on hover */
+    box-shadow: 0 10px 20px rgba(168, 85, 247, 0.2);
+}
     </script>
 </body>
 </html>
